@@ -776,20 +776,27 @@ class ServerConnection(Connection):
         # unless you've been connected for at least 5 minutes!
         self.send_raw("QUIT" + (message and (" :" + message)))
 
-    def send_raw(self, string):
-        """Send raw string to the server.
+    def send_raw(self, data):
+        """Send raw data to the server.
 
         The string will be padded with appropriate CR LF.
         """
+
+        if not isinstance(data, bytes):
+            raise TypeError(f'Expected bytes, got {type(data)}')
+
         if self.socket is None:
             raise ServerNotConnectedError("Not connected.")
+
+        data += b'\r\n'
+
         try:
             if self.ssl:
-                self.ssl.write(string + "\r\n")
+                self.ssl.write(data)
             else:
-                self.socket.send(string + "\r\n")
+                self.socket.send(data)
             if DEBUG:
-                print("TO SERVER:", string)
+                print("TO SERVER:", data.decode('utf-8'))
         except socket.error as x:
             # Ouch!
             self.disconnect("Connection reset by peer.")
