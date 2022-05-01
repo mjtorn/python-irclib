@@ -542,40 +542,40 @@ class ServerConnection(Connection):
             if command in numeric_events:
                 command = numeric_events[command]
 
-            if command == "nick":
+            if command == b"nick":
                 if nm_to_n(prefix) == self.real_nickname:
                     self.real_nickname = arguments[0]
-            elif command == "welcome":
+            elif command == b"welcome":
                 # Record the nickname in case the client changed nick
                 # in a nicknameinuse callback.
                 self.real_nickname = arguments[0]
 
-            if command in ["privmsg", "notice"]:
+            if command in [b"privmsg", b"notice"]:
                 target, message = arguments[0], arguments[1]
                 messages = _ctcp_dequote(message)
 
-                if command == "privmsg":
+                if command == b"privmsg":
                     if is_channel(target):
-                        command = "pubmsg"
+                        command = b"pubmsg"
                 else:
                     if is_channel(target):
-                        command = "pubnotice"
+                        command = b"pubnotice"
                     else:
-                        command = "privnotice"
+                        command = b"privnotice"
 
                 for m in messages:
                     if type(m) is tuple:
-                        if command in ["privmsg", "pubmsg"]:
-                            command = "ctcp"
+                        if command in [b"privmsg", b"pubmsg"]:
+                            command = b"ctcp"
                         else:
-                            command = "ctcpreply"
+                            command = b"ctcpreply"
 
                         m = list(m)
                         if DEBUG:
                             print("command: %s, source: %s, target: %s, arguments: %s" % (
                                 command, prefix, target, m))
                         self._handle_event(Event(command, prefix, target, m))
-                        if command == "ctcp" and m[0] == "ACTION":
+                        if command == "ctcp" and m[0] == b"ACTION":
                             self._handle_event(Event("action", prefix, target, m[1:]))
                     else:
                         if DEBUG:
@@ -585,17 +585,17 @@ class ServerConnection(Connection):
             else:
                 target = None
 
-                if command == "quit":
+                if command == b"quit":
                     arguments = [arguments[0]]
-                elif command == "ping":
+                elif command == b"ping":
                     target = arguments[0]
                 else:
                     target = arguments[0]
                     arguments = arguments[1:]
 
-                if command == "mode":
+                if command == b"mode":
                     if not is_channel(target):
-                        command = "umode"
+                        command = b"umode"
 
                 if DEBUG:
                     print("command: %s, source: %s, target: %s, arguments: %s" % (
