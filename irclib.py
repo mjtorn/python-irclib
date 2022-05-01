@@ -159,7 +159,7 @@ class IRC:
         self.handlers = {}
         self.delayed_commands = [] # list of tuples in the format (time, function, arguments)
 
-        self.add_global_handler("ping", _ping_ponger, -42)
+        self.add_global_handler(b"ping", _ping_ponger, -42)
 
     def server(self):
         """Creates and returns a ServerConnection object."""
@@ -238,7 +238,7 @@ class IRC:
 
         Arguments:
 
-            event -- Event type (a string).  Check the values of the
+            event -- Event type (bytes).  Check the values of the
             numeric_events dictionary in irclib.py for possible event
             types.
 
@@ -254,6 +254,9 @@ class IRC:
         number is highest priority).  If a handler function returns
         \"NO MORE\", no more handlers will be called.
         """
+        if not isinstance(event, bytes):
+            raise TypeError(f'{event} is not bytes')
+
         if not event in self.handlers:
             self.handlers[event] = []
         bisect.insort(self.handlers[event], ((priority, handler)))
@@ -1046,8 +1049,8 @@ class SimpleIRCClient:
         self.ircobj = IRC()
         self.connection = self.ircobj.server()
         self.dcc_connections = []
-        self.ircobj.add_global_handler("all_events", self._dispatcher, -10)
-        self.ircobj.add_global_handler("dcc_disconnect", self._dcc_disconnect, -10)
+        self.ircobj.add_global_handler(b"all_events", self._dispatcher, -10)
+        self.ircobj.add_global_handler(b"dcc_disconnect", self._dcc_disconnect, -10)
 
     def _dispatcher(self, c, e):
         """[Internal]"""
@@ -1128,7 +1131,7 @@ class Event:
 
         Arguments:
 
-            eventtype -- A string describing the event.
+            eventtype -- Bytes describing the event.
 
             source -- The originator of the event (a nick mask or a server).
 
@@ -1136,6 +1139,8 @@ class Event:
 
             arguments -- Any event specific arguments.
         """
+        if isinstance(eventtype, str):
+            eventtype = eventtype.encode('utf-8')
         self._eventtype = eventtype
         self._source = source
         self._target = target
