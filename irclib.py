@@ -228,7 +228,7 @@ class IRC:
         while 1:
             self.process_once(timeout)
 
-    def disconnect_all(self, message=""):
+    def disconnect_all(self, message=b""):
         """Disconnects all connections."""
         for c in self.connections:
             c.disconnect(message)
@@ -632,22 +632,22 @@ class ServerConnection(Connection):
 
     def action(self, target, action):
         """Send a CTCP ACTION command."""
-        self.ctcp("ACTION", target, action)
+        self.ctcp(b"ACTION", target, action)
 
-    def admin(self, server=""):
+    def admin(self, server=b""):
         """Send an ADMIN command."""
-        self.send_raw(" ".join(["ADMIN", server]).strip())
+        self.send_raw(b" ".join(["ADMIN", server]).strip())
 
-    def ctcp(self, ctcptype, target, parameter=""):
+    def ctcp(self, ctcptype, target, parameter=b""):
         """Send a CTCP command."""
         ctcptype = ctcptype.upper()
-        self.privmsg(target, "\001%s%s\001" % (ctcptype, parameter and (" " + parameter) or ""))
+        self.privmsg(target, b"\001%s%s\001" % (ctcptype, parameter and (b" " + parameter) or b""))
 
     def ctcp_reply(self, target, parameter):
         """Send a CTCP REPLY command."""
-        self.notice(target, "\001%s\001" % parameter)
+        self.notice(target, b"\001%s\001" % parameter)
 
-    def disconnect(self, message=""):
+    def disconnect(self, message=b""):
         """Hang up the connection.
 
         Arguments:
@@ -670,15 +670,15 @@ class ServerConnection(Connection):
 
     def globops(self, text):
         """Send a GLOBOPS command."""
-        self.send_raw("GLOBOPS :" + text)
+        self.send_raw(b"GLOBOPS :" + text)
 
-    def info(self, server=""):
+    def info(self, server=b""):
         """Send an INFO command."""
-        self.send_raw(" ".join(["INFO", server]).strip())
+        self.send_raw(b" ".join(["INFO", server]).strip())
 
     def invite(self, nick, channel):
         """Send an INVITE command."""
-        self.send_raw(" ".join(["INVITE", nick, channel]).strip())
+        self.send_raw(b" ".join(["INVITE", nick, channel]).strip())
 
     def ison(self, nicks):
         """Send an ISON command.
@@ -687,97 +687,97 @@ class ServerConnection(Connection):
 
             nicks -- List of nicks.
         """
-        self.send_raw("ISON " + " ".join(nicks))
+        self.send_raw(b"ISON " + " ".join(nicks))
 
-    def join(self, channel, key=""):
+    def join(self, channel, key=b""):
         """Send a JOIN command."""
-        self.send_raw("JOIN %s%s" % (channel, (key and (" " + key))))
+        self.send_raw(b"JOIN %s%s" % (channel, (key and (b" " + key))))
 
-    def kick(self, channel, nick, comment=""):
+    def kick(self, channel, nick, comment=b""):
         """Send a KICK command."""
-        self.send_raw("KICK %s %s%s" % (channel, nick, (comment and (" :" + comment))))
+        self.send_raw(b"KICK %s %s%s" % (channel, nick, (comment and (b" :" + comment))))
 
-    def links(self, remote_server="", server_mask=""):
+    def links(self, remote_server=b"", server_mask=b""):
         """Send a LINKS command."""
         command = "LINKS"
         if remote_server:
-            command = command + " " + remote_server
+            command = command + b" " + remote_server
         if server_mask:
-            command = command + " " + server_mask
+            command = command + b" " + server_mask
         self.send_raw(command)
 
-    def list(self, channels=None, server=""):
+    def list(self, channels=None, server=b""):
         """Send a LIST command."""
         command = "LIST"
         if channels:
-            command = command + " " + ",".join(channels)
+            command = command + b" " + b",".join(channels)
         if server:
-            command = command + " " + server
+            command = command + b" " + server
         self.send_raw(command)
 
-    def lusers(self, server=""):
+    def lusers(self, server=b""):
         """Send a LUSERS command."""
-        self.send_raw("LUSERS" + (server and (" " + server)))
+        self.send_raw(b"LUSERS" + (server and (b" " + server)))
 
     def mode(self, target, command):
         """Send a MODE command."""
-        self.send_raw("MODE %s %s" % (target, command))
+        self.send_raw(b"MODE %s %s" % (target, command))
 
-    def motd(self, server=""):
+    def motd(self, server=b""):
         """Send an MOTD command."""
-        self.send_raw("MOTD" + (server and (" " + server)))
+        self.send_raw(b"MOTD" + (server and (b" " + server)))
 
     def names(self, channels=None):
         """Send a NAMES command."""
-        self.send_raw("NAMES" + (channels and (" " + ",".join(channels)) or ""))
+        self.send_raw(b"NAMES" + (channels and (b" " + b",".join(channels)) or b""))
 
     def nick(self, newnick):
         """Send a NICK command."""
-        self.send_raw("NICK " + newnick)
+        self.send_raw(b"NICK " + newnick)
 
     def notice(self, target, text):
         """Send a NOTICE command."""
         # Should limit len(text) here!
-        self.send_raw("NOTICE %s :%s" % (target, text))
+        self.send_raw(b"NOTICE %s :%s" % (target, text))
 
     def oper(self, nick, password):
         """Send an OPER command."""
-        self.send_raw("OPER %s %s" % (nick, password))
+        self.send_raw(b"OPER %s %s" % (nick, password))
 
-    def part(self, channels, message=""):
+    def part(self, channels, message=b""):
         """Send a PART command."""
         if type(channels) == bytes:
-            self.send_raw("PART " + channels + (message and (" " + message)))
+            self.send_raw(b"PART " + channels + (message and (b" " + message)))
         else:
-            self.send_raw("PART " + ",".join(channels) + (message and (" " + message)))
+            self.send_raw(b"PART " + b",".join(channels) + (message and (b" " + message)))
 
     def pass_(self, password):
         """Send a PASS command."""
-        self.send_raw("PASS " + password)
+        self.send_raw(b"PASS " + password)
 
-    def ping(self, target, target2=""):
+    def ping(self, target, target2=b""):
         """Send a PING command."""
-        self.send_raw("PING %s%s" % (target, target2 and (" " + target2)))
+        self.send_raw(b"PING %s%s" % (target, target2 and (b" " + target2)))
 
-    def pong(self, target, target2=""):
+    def pong(self, target, target2=b""):
         """Send a PONG command."""
-        self.send_raw("PONG %s%s" % (target, target2 and (" " + target2)))
+        self.send_raw(b"PONG %s%s" % (target, target2 and (b" " + target2)))
 
     def privmsg(self, target, text):
         """Send a PRIVMSG command."""
         # Should limit len(text) here!
-        self.send_raw("PRIVMSG %s :%s" % (target, text))
+        self.send_raw(b"PRIVMSG %s :%s" % (target, text))
 
     def privmsg_many(self, targets, text):
         """Send a PRIVMSG command to multiple targets."""
         # Should limit len(text) here!
-        self.send_raw("PRIVMSG %s :%s" % (",".join(targets), text))
+        self.send_raw(b"PRIVMSG %s :%s" % (",".join(targets), text))
 
-    def quit(self, message=""):
+    def quit(self, message=b""):
         """Send a QUIT command."""
         # Note that many IRC servers don't use your QUIT message
         # unless you've been connected for at least 5 minutes!
-        self.send_raw("QUIT" + (message and (" :" + message)))
+        self.send_raw(b"QUIT" + (message and (b" :" + message)))
 
     def send_raw(self, data):
         """Send raw data to the server.
@@ -804,62 +804,62 @@ class ServerConnection(Connection):
             # Ouch!
             self.disconnect("Connection reset by peer.")
 
-    def squit(self, server, comment=""):
+    def squit(self, server, comment=b""):
         """Send an SQUIT command."""
-        self.send_raw("SQUIT %s%s" % (server, comment and (" :" + comment)))
+        self.send_raw(b"SQUIT %s%s" % (server, comment and (b" :" + comment)))
 
-    def stats(self, statstype, server=""):
+    def stats(self, statstype, server=b""):
         """Send a STATS command."""
-        self.send_raw("STATS %s%s" % (statstype, server and (" " + server)))
+        self.send_raw(b"STATS %s%s" % (statstype, server and (b" " + server)))
 
-    def time(self, server=""):
+    def time(self, server=b""):
         """Send a TIME command."""
-        self.send_raw("TIME" + (server and (" " + server)))
+        self.send_raw(b"TIME" + (server and (b" " + server)))
 
     def topic(self, channel, new_topic=None):
         """Send a TOPIC command."""
         if new_topic is None:
-            self.send_raw("TOPIC " + channel)
+            self.send_raw(b"TOPIC " + channel)
         else:
-            self.send_raw("TOPIC %s :%s" % (channel, new_topic))
+            self.send_raw(b"TOPIC %s :%s" % (channel, new_topic))
 
-    def trace(self, target=""):
+    def trace(self, target=b""):
         """Send a TRACE command."""
-        self.send_raw("TRACE" + (target and (" " + target)))
+        self.send_raw(b"TRACE" + (target and (b" " + target)))
 
     def user(self, username, realname):
         """Send a USER command."""
-        self.send_raw("USER %s 0 * :%s" % (username, realname))
+        self.send_raw(b"USER %s 0 * :%s" % (username, realname))
 
     def userhost(self, nicks):
         """Send a USERHOST command."""
-        self.send_raw("USERHOST " + ",".join(nicks))
+        self.send_raw(b"USERHOST " + ",".join(nicks))
 
-    def users(self, server=""):
+    def users(self, server=b""):
         """Send a USERS command."""
-        self.send_raw("USERS" + (server and (" " + server)))
+        self.send_raw(b"USERS" + (server and (b" " + server)))
 
-    def version(self, server=""):
+    def version(self, server=b""):
         """Send a VERSION command."""
-        self.send_raw("VERSION" + (server and (" " + server)))
+        self.send_raw(b"VERSION" + (server and (b" " + server)))
 
     def wallops(self, text):
         """Send a WALLOPS command."""
-        self.send_raw("WALLOPS :" + text)
+        self.send_raw(b"WALLOPS :" + text)
 
-    def who(self, target="", op=""):
+    def who(self, target=b"", op=b""):
         """Send a WHO command."""
-        self.send_raw("WHO%s%s" % (target and (" " + target), op and (" o")))
+        self.send_raw(b"WHO%s%s" % (target and (b" " + target), op and (b" o")))
 
     def whois(self, targets):
         """Send a WHOIS command."""
-        self.send_raw("WHOIS " + ",".join(targets))
+        self.send_raw(b"WHOIS " + ",".join(targets))
 
-    def whowas(self, nick, max="", server=""):
+    def whowas(self, nick, max=b"", server=b""):
         """Send a WHOWAS command."""
-        self.send_raw("WHOWAS %s%s%s" % (nick,
-                                         max and (" " + max),
-                                         server and (" " + server)))
+        self.send_raw(b"WHOWAS %s%s%s" % (nick,
+                                         max and (b" " + max),
+                                         server and (b" " + server)))
 
 class DCCConnectionError(IRCError):
     pass
@@ -927,7 +927,7 @@ class DCCConnection(Connection):
             raise DCCConnectionError("Couldn't bind socket: %s" % x)
         return self
 
-    def disconnect(self, message=""):
+    def disconnect(self, message=b""):
         """Hang up the connection and close the object.
 
         Arguments:
