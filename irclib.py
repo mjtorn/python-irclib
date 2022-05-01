@@ -331,7 +331,7 @@ class IRC:
         if self.fn_to_remove_socket:
             self.fn_to_remove_socket(connection._get_socket())
 
-_rfc_1459_command_regexp = re.compile("^(:(?P<prefix>[^ ]+) +)?(?P<command>[^ ]+)( *(?P<argument> .+))?")
+_rfc_1459_command_regexp = re.compile(b"^(:(?P<prefix>[^ ]+) +)?(?P<command>[^ ]+)( *(?P<argument> .+))?")
 
 class Connection:
     """Base class for IRC connections.
@@ -363,7 +363,7 @@ class ServerNotConnectedError(ServerConnectionError):
 
 # Huh!?  Crrrrazy EFNet doesn't follow the RFC: their ircd seems to
 # use \n as message separator!  :P
-_linesep_regexp = re.compile("\r?\n")
+_linesep_regexp = re.compile(b"\r?\n")
 
 class ServerConnection(Connection):
     """This class represents an IRC server connection.
@@ -411,7 +411,7 @@ class ServerConnection(Connection):
         if self.connected:
             self.disconnect("Changing servers")
 
-        self.previous_buffer = ""
+        self.previous_buffer = b""
         self.handlers = {}
         self.real_server_name = ""
         self.real_nickname = nickname
@@ -530,7 +530,7 @@ class ServerConnection(Connection):
                 command = m.group("command").lower()
 
             if m.group("argument"):
-                a = m.group("argument").split(" :", 1)
+                a = m.group("argument").split(b" :", 1)
                 arguments = a[0].split()
                 if len(a) == 2:
                     arguments.append(a[1])
@@ -889,7 +889,7 @@ class DCCConnection(Connection):
         self.peeraddress = socket.gethostbyname(address)
         self.peerport = port
         self.socket = None
-        self.previous_buffer = ""
+        self.previous_buffer = b""
         self.handlers = {}
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.passive = 0
@@ -912,7 +912,7 @@ class DCCConnection(Connection):
         peer, the peer address and port are available as
         self.peeraddress and self.peerport.
         """
-        self.previous_buffer = ""
+        self.previous_buffer = b""
         self.handlers = {}
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.passive = 1
@@ -1160,18 +1160,18 @@ class Event:
         """Get the event arguments."""
         return self._arguments
 
-_LOW_LEVEL_QUOTE = "\020"
-_CTCP_LEVEL_QUOTE = "\134"
-_CTCP_DELIMITER = "\001"
+_LOW_LEVEL_QUOTE = b"\020"
+_CTCP_LEVEL_QUOTE = b"\134"
+_CTCP_DELIMITER = b"\001"
 
 _low_level_mapping = {
-    "0": "\000",
-    "n": "\n",
-    "r": "\r",
+    b"0": b"\000",
+    b"n": b"\n",
+    b"r": b"\r",
     _LOW_LEVEL_QUOTE: _LOW_LEVEL_QUOTE
 }
 
-_low_level_regexp = re.compile(_LOW_LEVEL_QUOTE + "(.)")
+_low_level_regexp = re.compile(_LOW_LEVEL_QUOTE + b"(.)")
 
 def mask_matches(nick, mask):
     """Check if a nick matches a mask.
