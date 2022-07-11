@@ -1267,12 +1267,12 @@ def _ctcp_dequote(message):
 
         return messages
 
-def is_channel(string):
-    """Check if a string is a channel name.
+def is_channel(name):
+    """Check if a name is a channel name.
 
     Returns true if the argument is a channel name, otherwise false.
     """
-    return string and string[0] in "#&+!"
+    return name and name[0] in b"#&+!"
 
 def ip_numstr_to_quad(num):
     """Convert an IP number as an integer given in ASCII
