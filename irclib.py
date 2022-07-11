@@ -496,11 +496,11 @@ class ServerConnection(Connection):
                 new_data = self.socket.recv(2**14)
         except socket.error as x:
             # The server hung up.
-            self.disconnect("Connection reset by peer")
+            self.disconnect(b"Connection reset by peer")
             return
         if not new_data:
             # Read nothing: connection must be down.
-            self.disconnect("Connection reset by peer")
+            self.disconnect(b"Connection reset by peer")
             return
 
         lines = _linesep_regexp.split(self.previous_buffer + new_data)
@@ -802,7 +802,7 @@ class ServerConnection(Connection):
                 print("TO SERVER:", data.decode('utf-8'))
         except socket.error as x:
             # Ouch!
-            self.disconnect("Connection reset by peer.")
+            self.disconnect(b"Connection reset by peer.")
 
     def squit(self, server, comment=b""):
         """Send an SQUIT command."""
@@ -968,11 +968,11 @@ class DCCConnection(Connection):
             new_data = self.socket.recv(2**14)
         except socket.error as x:
             # The server hung up.
-            self.disconnect("Connection reset by peer")
+            self.disconnect(b"Connection reset by peer")
             return
         if not new_data:
             # Read nothing: connection must be down.
-            self.disconnect("Connection reset by peer")
+            self.disconnect(b"Connection reset by peer")
             return
 
         if self.dcctype == "chat":
@@ -1022,7 +1022,7 @@ class DCCConnection(Connection):
                 print("TO PEER: %s\n" % string)
         except socket.error as x:
             # Ouch!
-            self.disconnect("Connection reset by peer.")
+            self.disconnect(b"Connection reset by peer.")
 
 class SimpleIRCClient:
     """A simple single-server IRC client class.
