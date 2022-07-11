@@ -412,7 +412,7 @@ class ServerConnection(Connection):
         Returns the ServerConnection object.
         """
         if self.connected:
-            self.disconnect("Changing servers")
+            self.disconnect(b"Changing servers")
 
         self.previous_buffer = b""
         self.handlers = {}
@@ -1054,7 +1054,8 @@ class SimpleIRCClient:
 
     def _dispatcher(self, c, e):
         """[Internal]"""
-        m = "on_" + e.eventtype()
+        m = b"on_" + e.eventtype()
+        m = m.decode('utf-8')
         if hasattr(self, m):
             getattr(self, m)(c, e)
 
@@ -1156,13 +1157,16 @@ class Event:
         else:
             self._arguments = []
 
+    def __str__(self):
+        return f'eventtype={self.eventtype()} source={self.source()} target={self.target()} // {self.arguments()}'
+
     def eventtype(self):
         """Get the event type."""
-        return self._eventtype.decode('utf-8')
+        return self._eventtype
 
     def source(self):
         """Get the event source."""
-        return self._source.decode('utf-8')
+        return self._source
 
     def target(self):
         """Get the event target."""
