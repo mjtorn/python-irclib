@@ -484,7 +484,7 @@ class ServerConnection(Connection):
         track of nick changes, so it might not be the nick name that
         was passed to the connect() method.  """
 
-        return self.real_nickname
+        return self.real_nickname.decode('utf-8')
 
     def process_data(self):
         """[Internal]"""
